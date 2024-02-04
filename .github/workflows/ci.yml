@@ -1,0 +1,54 @@
+name: 'Continuous Integration'
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - name: List modified files
+        id: changed-files
+        uses: tj-actions/changed-files@v41
+
+      - name: Install flake8 black isort
+        run: pip install flake8 black isort
+
+      - name: Run flake8
+        run: |
+          flake8 --count --config=setup.cfg --show-source --statistics ${{ steps.changed-files.outputs.all_changed_files }}
+
+      - name: Run isort
+        run: isort --check --diff --profile=black ${{ steps.changed-files.outputs.all_changed_files }}
+
+      - name: Run black
+        run: black --check --diff ${{ steps.changed-files.outputs.all_changed_files }}
+
+  tests:
+    run_tests:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+
+        - uses: actions/setup-python@v4
+          with:
+            python-version: '3.11.2'
+
+        - name: Install dependencies
+          run: |
+            pip install -r requirements.txt
+            pip install -r requirements-test.txt
+
+        - name: Run model test
+          run: make model-test
+
+        - name: Run api test
+          run: make api-test
+
+        - name: Run stress test
+          run: make stress-test
