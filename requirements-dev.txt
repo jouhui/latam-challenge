@@ -1,2 +1,5 @@
 matplotlib~=3.7.2
 seaborn~=0.12.2
+flake8~=7.0.0
+isort~=5.13.2
+black~=24.1.1
