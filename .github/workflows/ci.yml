@@ -30,25 +30,24 @@ jobs:
         run: black --check --diff ${{ steps.changed-files.outputs.all_changed_files }}
 
   tests:
-    run_tests:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-        - uses: actions/setup-python@v4
-          with:
-            python-version: '3.11.2'
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11.2'
 
-        - name: Install dependencies
-          run: |
-            pip install -r requirements.txt
-            pip install -r requirements-test.txt
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
 
-        - name: Run model test
-          run: make model-test
+      - name: Run model test
+        run: make model-test
 
-        - name: Run api test
-          run: make api-test
+      - name: Run api test
+        run: make api-test
 
-        - name: Run stress test
-          run: make stress-test
+      - name: Run stress test
+        run: make stress-test
